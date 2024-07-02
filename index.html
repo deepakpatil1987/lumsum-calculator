@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lump Sum Calculator</title>
+  </head>
+  <body>
+    <h1>Lump Sum Calculator</h1>
+    <form id="calculator-form">
+      <label for="principal">Principal Amount:</label>
+      <input type="number" id="principal" name="principal" required />
+      <br />
+      <label for="rate">Annual Interest Rate (%):</label>
+      <input type="number" id="rate" name="rate" step="0.01" required />
+      <br />
+      <label for="time">Time (in years):</label>
+      <input type="number" id="time" name="time" required />
+      <br />
+      <button type="submit">Calculate</button>
+    </form>
+    <h2>Result: <span id="result"></span></h2>
+
+    <script>
+      document
+        .getElementById("calculator-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const principal = parseFloat(
+            document.getElementById("principal").value
+          );
+          const rate = parseFloat(document.getElementById("rate").value);
+          const time = parseFloat(document.getElementById("time").value);
+
+          fetch("/calculate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ principal, rate, time }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("result").textContent =
+                data.amount.toFixed(2);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+    </script>
+  </body>
+</html>
